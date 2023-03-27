@@ -10072,10 +10072,6 @@
     "pip_dependencies": {
         "wheel": [
             {
-                "module": "backports.functools_lru_cache",
-                "input_file": "wheels/shared/backports.functools_lru_cache-1.6.4-py2.py3-none-any.whl"
-            },
-            {
                 "module": "beautifulsoup4",
                 "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
             },
@@ -10107,10 +10103,6 @@
     },
     "pip39_dependencies": {
         "wheel": [
-            {
-                "module": "backports.functools_lru_cache",
-                "input_file": "wheels/shared/backports.functools_lru_cache-1.6.4-py2.py3-none-any.whl"
-            },
             {
                 "module": "beautifulsoup4",
                 "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"

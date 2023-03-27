@@ -1,3 +1,2 @@
-backports.functools_lru_cache==1.6.4
 beautifulsoup4==4.9.1
 requests==2.25.0

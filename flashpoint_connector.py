@@ -68,7 +68,8 @@ class FlashpointConnector(BaseConnector):
         if response.status_code == 200 or response.status_code == 204:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR, "Status code: {}. Empty response and no information in the header".format(response.status_code)), None)
+        return RetVal(action_result.set_status(phantom.APP_ERROR,
+            "Status code: {}. Empty response and no information in the header".format(response.status_code)), None)
 
     def _process_html_response(self, response, action_result):
         """Process html response.
@@ -112,8 +113,10 @@ class FlashpointConnector(BaseConnector):
         try:
             resp_json = r.json()
         except Exception as e:
-            error_code, error_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse JSON response. Error Code: {0}. Error Message: {1}".format(error_code, error_msg)), None)
+            error_code, error_message = self._get_error_message_from_exception(e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR,
+            "Unable to parse JSON response. Error Code: {0}. Error Message: {1}".format(
+                error_code, error_message)), None)
 
         # Please specify the status codes here
         if 200 <= r.status_code < 399:
@@ -185,24 +188,24 @@ class FlashpointConnector(BaseConnector):
         :param e: Exception object
         :return: error message
         """
-        error_msg = FLASHPOINT_UNKNOWN_ERROR_MESSAGE
+        error_message = FLASHPOINT_UNKNOWN_ERROR_MESSAGE
 
         try:
             if e.args:
                 if len(e.args) > 1:
                     error_code = e.args[0]
-                    error_msg = e.args[1]
+                    error_message = e.args[1]
                 elif len(e.args) == 1:
                     error_code = FLASHPOINT_ERROR_CODE_MESSAGE
-                    error_msg = e.args[0]
+                    error_message = e.args[0]
             else:
                 error_code = FLASHPOINT_ERROR_CODE_MESSAGE
-                error_msg = FLASHPOINT_UNKNOWN_ERROR_MESSAGE
+                error_message = FLASHPOINT_UNKNOWN_ERROR_MESSAGE
         except Exception:
             error_code = FLASHPOINT_ERROR_CODE_MESSAGE
-            error_msg = FLASHPOINT_UNKNOWN_ERROR_MESSAGE
+            error_message = FLASHPOINT_UNKNOWN_ERROR_MESSAGE
 
-        return error_code, error_msg
+        return error_code, error_message
 
     def _make_rest_call(self, endpoint, action_result, method="get", params=None, data=None):
         """Make the REST call to the app.
@@ -245,8 +248,10 @@ class FlashpointConnector(BaseConnector):
             error_message = 'Error connecting to server. Invalid URL %s' % (url)
             return RetVal(action_result.set_status(phantom.APP_ERROR, error_message), resp_json)
         except Exception as e:
-            error_code, error_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Error connecting to server. Error Code: {0}. Error Message: {1}".format(error_code, error_msg)), resp_json)
+            error_code, error_message = self._get_error_message_from_exception(e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR,
+            "Error connecting to server. Error Code: {0}. Error Message: {1}".format(
+                error_code, error_message)), resp_json)
 
         if self._no_of_retries and r.status_code == 500:
             # Retrying REST call in case of Internal Server Error
@@ -279,8 +284,10 @@ class FlashpointConnector(BaseConnector):
         try:
             r = request_func(url, params=params, headers=headers, data=data)
         except Exception as e:
-            error_code, error_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Error connecting to server. Error Code: {0}. Error Message: {1}".format(error_code, error_msg)), None)
+            error_code, error_message = self._get_error_message_from_exception(e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR,
+            "Error connecting to server. Error Code: {0}. Error Message: {1}".format(
+                error_code, error_message)), None)
 
         if r.status_code == 500 and self._attempted_retries < self._no_of_retries:
             # Retrying REST call for given number of retries in case of continuous Internal Server Error
@@ -964,7 +971,8 @@ class FlashpointConnector(BaseConnector):
                     action_result.set_status(phantom.APP_ERROR, FLASHPOINT_LIMIT_VALIDATION_MESSAGE.format(parameter=key))
                     return None
         except Exception:
-            error_text = FLASHPOINT_LIMIT_VALIDATION_ALLOW_ZERO_MESSAGE.format(parameter=key) if allow_zero else FLASHPOINT_LIMIT_VALIDATION_MESSAGE.format(parameter=key)
+            error_text = FLASHPOINT_LIMIT_VALIDATION_ALLOW_ZERO_MESSAGE.format(
+                parameter=key) if allow_zero else FLASHPOINT_LIMIT_VALIDATION_MESSAGE.format(parameter=key)
             action_result.set_status(phantom.APP_ERROR, error_text)
             return None
         return parameter
@@ -1020,12 +1028,16 @@ class FlashpointConnector(BaseConnector):
             return self.get_status()
 
         # Validate the 'no_of_retries' config parameter
-        self._no_of_retries = self._validate_integers(self, config.get('no_of_retries', FLASHPOINT_NUMBER_OF_RETRIES), FLASHPOINT_CONFIG_NO_OF_RETRIES_KEY, True)
+        self._no_of_retries = self._validate_integers(self, config.get(
+            'no_of_retries', FLASHPOINT_NUMBER_OF_RETRIES), FLASHPOINT_CONFIG_NO_OF_RETRIES_KEY,
+            True)
         if self._no_of_retries is None:
             return self.get_status()
 
         # Validate the 'session_timeout' config parameter
-        self._session_timeout = self._validate_integers(self, config.get('session_timeout', FLASHPOINT_SESSION_TIMEOUT), FLASHPOINT_CONFIG_SESSION_TIMEOUT_KEY)
+        self._session_timeout = self._validate_integers(self, config.get(
+            'session_timeout', FLASHPOINT_SESSION_TIMEOUT),
+            FLASHPOINT_CONFIG_SESSION_TIMEOUT_KEY)
         if self._session_timeout is None:
             return self.get_status()
 
