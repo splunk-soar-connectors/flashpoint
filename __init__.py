@@ -1,7 +1,7 @@
 # --
 # File: __init__.py
 #
-# Copyright (c) Flashpoint, 2020
+# Copyright (c) Flashpoint, 2020-2023
 #
 # This unpublished material is proprietary to Flashpoint.
 # All rights reserved. The methods and
