@@ -243,10 +243,10 @@ class FlashpointConnector(BaseConnector):
         try:
             r = request_func(url, params=params, headers=headers, data=data)
         except requests.exceptions.InvalidSchema:
-            error_message = 'Error connecting to server. No connection adapters were found for %s' % (url)
+            error_message = 'Error connecting to server. No connection adapters were found for {}'.fo(url)
             return RetVal(action_result.set_status(phantom.APP_ERROR, error_message), resp_json)
         except requests.exceptions.InvalidURL:
-            error_message = 'Error connecting to server. Invalid URL %s' % (url)
+            error_message = 'Error connecting to server. Invalid URL {}'.format(url)
             return RetVal(action_result.set_status(phantom.APP_ERROR, error_message), resp_json)
         except Exception as e:
             error_code, error_message = self._get_error_message_from_exception(e)
