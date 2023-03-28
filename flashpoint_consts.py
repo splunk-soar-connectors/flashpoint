@@ -1,7 +1,7 @@
 # --
 # File: flashpoint_consts.py
 #
-# Copyright (c) Flashpoint, 2020
+# Copyright (c) Flashpoint, 2020-2023
 #
 # This unpublished material is proprietary to Flashpoint.
 # All rights reserved. The methods and
@@ -19,7 +19,7 @@
 FLASHPOINT_X_FP_INTEGRATION_PLATFORM = "Phantom"
 
 # Flashpoint endpoints
-FLASHPOINT_SIMPLIFIED_INDICATORS_ENDPOINT = "/indicators/simple"
+FLASHPOINT_INDICATORS_ENDPOINT = "/indicators/attribute"
 FLASHPOINT_ALL_SEARCH_ENDPOINT = "/all/search"
 FLASHPOINT_SIMPLIFIED_INDICATORS_SCROLL_ENDPOINT = "/indicators/scroll"
 FLASHPOINT_ALL_SEARCH_SCROLL_ENDPOINT = "/all/scroll"
@@ -31,6 +31,7 @@ FLASHPOINT_PER_PAGE_DEFAULT_LIMIT = 500
 FLASHPOINT_DEFAULT_WAIT_TIMEOUT_PERIOD = 5
 FLASHPOINT_NUMBER_OF_RETRIES = 1
 FLASHPOINT_SESSION_TIMEOUT = 2
+FLASHPOINT_DEFAULT_REQUEST_TIMEOUT = 30
 
 # Validate Integers key constants
 FLASHPOINT_CONFIG_WAIT_TIMEOUT_PERIOD_KEY = "'Retry Wait Period(in seconds)' asset configuration"
@@ -46,5 +47,4 @@ FLASHPOINT_ALREADY_DISABLE_SESSION_SCROLL_ERROR_MESSAGE = "Status code: 404"
 FLASHPOINT_ERROR_CODE_MESSAGE = "Error code unavailable"
 FLASHPOINT_UNKNOWN_ERROR_MESSAGE = "Unknown error occurred. Please check the asset configuration and|or the action parameters."
 FLASHPOINT_INVALID_COMMA_SEPARATED_LIST_ERROR = "Please provide valid comma-separated list of attribute types"
-FLASHPOINT_UNICODE_DAMMIT_TYPE_ERROR_MESSAGE = "Error occurred while connecting to the Flashpoint server. Please check the asset configuration and|or the action parameters."
 FLASHPOINT_ERROR_SESSION_TIMEOUT_VALUE = "Please provide session timeout value between 1 and 60."

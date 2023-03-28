@@ -1,1 +1,3 @@
 **Unreleased**
+* Compatibility changes for Python 3 support
+* Updated API endpoint for "list indicators" and "search indicators" actions
