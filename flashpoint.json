@@ -8077,7 +8077,7 @@
                     "data_path": "action_result.data.*.Attribute.Event.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA"
+                        "https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA"
                     ]
                 },
                 {
@@ -8112,7 +8112,7 @@
                     "data_path": "action_result.data.*.Attribute.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
+                        "https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
                     ]
                 },
                 {
@@ -8419,7 +8419,7 @@
                     "data_path": "action_result.data.*.Event.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA"
+                        "https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA"
                     ],
                     "contains": [
                         "url"
@@ -8537,7 +8537,7 @@
                     "data_path": "action_result.data.*.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
+                        "https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
                     ],
                     "contains": [
                         "url"
@@ -9278,7 +9278,7 @@
                     "data_path": "action_result.data.*.Attribute.Event.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA"
+                        "https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA"
                     ]
                 },
                 {
@@ -9313,7 +9313,7 @@
                     "data_path": "action_result.data.*.Attribute.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
+                        "https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
                     ]
                 },
                 {
@@ -9387,7 +9387,7 @@
                     "data_path": "action_result.data.*.Event.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/event/h-Uvmip4VPSshdEj7PgmcQ"
+                        "https://api.flashpoint.io/technical-intelligence/v1/event/A-1RokO9Wqq11S78N2TojA"
                     ],
                     "contains": [
                         "url"
@@ -9425,7 +9425,7 @@
                     "data_path": "action_result.data.*.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/attribute/-2kF-m_qWw6mpDcF4MuITg"
+                        "https://api.flashpoint.io/technical-intelligence/v1/attribute/caG9zjTIW8u_md8rfGWDjg"
                     ],
                     "contains": [
                         "url"
