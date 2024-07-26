@@ -1,7 +1,7 @@
 # --
 # File: flashpoint_consts.py
 #
-# Copyright (c) Flashpoint, 2020-2023
+# Copyright (c) Flashpoint, 2020-2024
 #
 # This unpublished material is proprietary to Flashpoint.
 # All rights reserved. The methods and
@@ -19,13 +19,13 @@
 FLASHPOINT_X_FP_INTEGRATION_PLATFORM = "Phantom"
 
 # Flashpoint endpoints
-FLASHPOINT_INDICATORS_ENDPOINT = "/indicators/attribute"
-FLASHPOINT_ALL_SEARCH_ENDPOINT = "/all/search"
-FLASHPOINT_SIMPLIFIED_INDICATORS_SCROLL_ENDPOINT = "/indicators/scroll"
-FLASHPOINT_ALL_SEARCH_SCROLL_ENDPOINT = "/all/scroll"
-FLASHPOINT_LIST_REPORTS_ENDPOINT = "/reports"
-FLASHPOINT_GET_REPORT_ENDPOINT = "/reports/{report_id}"
-FLASHPOINT_LIST_RELATED_REPORTS_ENDPOINT = "/reports/{report_id}/related"
+FLASHPOINT_INDICATORS_ENDPOINT = "/technical-intelligence/v1/attribute"
+FLASHPOINT_ALL_SEARCH_ENDPOINT = "/sources/v1/noncommunities/search"
+FLASHPOINT_SIMPLIFIED_INDICATORS_SCROLL_ENDPOINT = "/technical-intelligence/v1/scroll"
+FLASHPOINT_ALL_SEARCH_SCROLL_ENDPOINT = "/sources/v1/noncommunities/scroll"
+FLASHPOINT_LIST_REPORTS_ENDPOINT = "/finished-intelligence/v1/reports"
+FLASHPOINT_GET_REPORT_ENDPOINT = "/finished-intelligence/v1/reports/{report_id}"
+FLASHPOINT_LIST_RELATED_REPORTS_ENDPOINT = "/finished-intelligence/v1/reports/{report_id}/related"
 
 FLASHPOINT_PER_PAGE_DEFAULT_LIMIT = 500
 FLASHPOINT_DEFAULT_WAIT_TIMEOUT_PERIOD = 5
