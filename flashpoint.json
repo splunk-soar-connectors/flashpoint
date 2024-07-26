@@ -17,7 +17,7 @@
     "min_phantom_version": "6.2.1",
     "app_wizard_version": "1.0.0",
     "python_version": "3",
-    "fips_compliant": true, 
+    "fips_compliant": true,
     "latest_tested_version": [
         "Cloud v4.5.23"
     ],
