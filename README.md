@@ -2,11 +2,11 @@
 # Flashpoint
 
 Publisher: Flashpoint  
-Connector Version: 2.0.0  
+Connector Version: 3.0.0  
 Product Vendor: Flashpoint  
 Product Name: Flashpoint  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 5.5.0  
+Minimum Product Version: 6.2.1  
 
 This app implements the investigative actions for the Flashpoint on the Phantom Platform
 
@@ -1569,12 +1569,12 @@ action_result.parameter.query | string |  `fp attribute value`  |   "test text" 
 action_result.data.\*.Attribute.Event.RelatedEvent.\*.Event.fpid | string |  |   g8L1tzecUgOS6FWvBJrCxA 
 action_result.data.\*.Attribute.Event.RelatedEvent.\*.Event.info | string |  |   EventInfo 
 action_result.data.\*.Attribute.Event.fpid | string |  |   zP1UL5zqWf6PxQv8f5OkdA 
-action_result.data.\*.Attribute.Event.href | string |  |   https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA 
+action_result.data.\*.Attribute.Event.href | string |  |   https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA 
 action_result.data.\*.Attribute.Event.info | string |  |   EventInfo_f59e91ef018b716d525bf7bcf50edbc040321748_2019-06-17T04:01:01.000Z 
 action_result.data.\*.Attribute.Event.timestamp | string |  |   1560895664 
 action_result.data.\*.Attribute.category | string |  |   Payload delivery 
 action_result.data.\*.Attribute.fpid | string |  |   tQ3UYKNAUV-iSWQp7s3ppg 
-action_result.data.\*.Attribute.href | string |  |   https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg 
+action_result.data.\*.Attribute.href | string |  |   https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg 
 action_result.data.\*.Attribute.timestamp | string |  |   1560895664 
 action_result.data.\*.Attribute.type | string |  `fp attribute type`  |   md5 
 action_result.data.\*.Attribute.uuid | string |  |   c0e430ce-c96a-47ac-aa7d-d90b83bd4fe5 
@@ -1616,7 +1616,7 @@ action_result.data.\*.Event.attribute_count | string |  |   1
 action_result.data.\*.Event.date | string |  |   2019-02-05 
 action_result.data.\*.Event.event_creator_email | string |  `email`  |   email@testdomainlink.com 
 action_result.data.\*.Event.fpid | string |  |   zP1UL5zqWf6PxQv8f5OkdA 
-action_result.data.\*.Event.href | string |  `url`  |   https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA 
+action_result.data.\*.Event.href | string |  `url`  |   https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA 
 action_result.data.\*.Event.info | string |  |   CryptingService_f59e91ef018b716d525bf7bcf50edbc040321748_2019-06-17T04:01:01.000Z 
 action_result.data.\*.Event.publish_timestamp | string |  |   1549412790 
 action_result.data.\*.Event.report | string |  `url`  |   https://fp.tools/home/intelligence/reports/report/E_J_zA_tTamKK61VWvnyxg 
@@ -1631,7 +1631,7 @@ action_result.data.\*.header_.ingested_at | numeric |  |   1560988795
 action_result.data.\*.header_.is_visible | boolean |  |   True  False 
 action_result.data.\*.header_.observed_at | numeric |  |   1560988795 
 action_result.data.\*.header_.source | string |  |   urn:fp:resource:qualified:indicator 
-action_result.data.\*.href | string |  `url`  |   https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg 
+action_result.data.\*.href | string |  `url`  |   https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg 
 action_result.data.\*.timestamp | string |  |   1560895664 
 action_result.data.\*.type | string |  `fp attribute type`  |   md5 
 action_result.data.\*.uuid | string |  |   c0e430ce-c96a-47ac-aa7d-d90b83bd4fe5 
@@ -1762,12 +1762,12 @@ action_result.parameter.limit | numeric |  |   500
 action_result.data.\*.Attribute.Event.RelatedEvent.\*.Event.fpid | string |  |   g8L1tzecUgOS6FWvBJrCxA 
 action_result.data.\*.Attribute.Event.RelatedEvent.\*.Event.info | string |  |   DarkHotel 
 action_result.data.\*.Attribute.Event.fpid | string |  |   zP1UL5zqWf6PxQv8f5OkdA 
-action_result.data.\*.Attribute.Event.href | string |  |   https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA 
+action_result.data.\*.Attribute.Event.href | string |  |   https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA 
 action_result.data.\*.Attribute.Event.info | string |  |   CryptingService_f59e91ef018b716d525bf7bcf50edbc040321748_2019-06-17T04:01:01.000Z 
 action_result.data.\*.Attribute.Event.timestamp | string |  |   1560895664 
 action_result.data.\*.Attribute.category | string |  |   Payload delivery 
 action_result.data.\*.Attribute.fpid | string |  |   tQ3UYKNAUV-iSWQp7s3ppg 
-action_result.data.\*.Attribute.href | string |  |   https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg 
+action_result.data.\*.Attribute.href | string |  |   https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg 
 action_result.data.\*.Attribute.timestamp | string |  |   1560895664 
 action_result.data.\*.Attribute.type | string |  `fp attribute type`  |   md5 
 action_result.data.\*.Attribute.uuid | string |  |   c0e430ce-c96a-47ac-aa7d-d90b83bd4fe5 
@@ -1777,12 +1777,12 @@ action_result.data.\*.Event.RelatedEvent.\*.Event.fpid | string |  |   Z0x7QOWoX
 action_result.data.\*.Event.RelatedEvent.\*.Event.info | string |  |   VBCrypter pivot on Wipro data 
 action_result.data.\*.Event.Tags | string |  |   region:China 
 action_result.data.\*.Event.fpid | string |  |   h-Uvmip4VPSshdEj7PgmcQ 
-action_result.data.\*.Event.href | string |  `url`  |   https://fp.tools/api/v4/indicators/event/h-Uvmip4VPSshdEj7PgmcQ 
+action_result.data.\*.Event.href | string |  `url`  |   https://api.flashpoint.io/technical-intelligence/v1/event/A-1RokO9Wqq11S78N2TojA 
 action_result.data.\*.Event.info | string |  |   APT 1 Historic Indicators 
 action_result.data.\*.Event.timestamp | string |  |   1539871610 
 action_result.data.\*.category | string |  |   Payload delivery 
 action_result.data.\*.fpid | string |  |   -2kF-m_qWw6mpDcF4MuITg 
-action_result.data.\*.href | string |  `url`  |   https://fp.tools/api/v4/indicators/attribute/-2kF-m_qWw6mpDcF4MuITg 
+action_result.data.\*.href | string |  `url`  |   https://api.flashpoint.io/technical-intelligence/v1/attribute/caG9zjTIW8u_md8rfGWDjg 
 action_result.data.\*.timestamp | string |  |   1539871466 
 action_result.data.\*.type | string |  `fp attribute type`  |   md5 
 action_result.data.\*.uuid | string |  |   5bc892ea-ed70-45e4-8edb-5b560a640c05 
