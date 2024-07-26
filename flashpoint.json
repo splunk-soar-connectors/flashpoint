@@ -9,15 +9,15 @@
     "product_name": "Flashpoint",
     "product_version_regex": ".*",
     "publisher": "Flashpoint",
-    "license": "Copyright (c) Flashpoint, 2020-2023",
-    "app_version": "2.0.0",
+    "license": "Copyright (c) Flashpoint, 2020-2024",
+    "app_version": "3.0.0",
     "utctime_updated": "2022-01-07T20:38:11.000000Z",
     "package_name": "phantom_flashpoint",
     "main_module": "flashpoint_connector.py",
-    "min_phantom_version": "5.5.0",
+    "min_phantom_version": "6.2.1",
     "app_wizard_version": "1.0.0",
     "python_version": "3",
-    "fips_compliant": true, 
+    "fips_compliant": true,
     "latest_tested_version": [
         "Cloud v4.5.23"
     ],
@@ -26,7 +26,7 @@
             "description": "Base URL",
             "data_type": "string",
             "required": true,
-            "default": "https://fp.tools/api/v4",
+            "default": "https://api.flashpoint.io",
             "order": 0
         },
         "api_token": {
@@ -8077,7 +8077,7 @@
                     "data_path": "action_result.data.*.Attribute.Event.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA"
+                        "https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA"
                     ]
                 },
                 {
@@ -8112,7 +8112,7 @@
                     "data_path": "action_result.data.*.Attribute.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
+                        "https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
                     ]
                 },
                 {
@@ -8419,7 +8419,7 @@
                     "data_path": "action_result.data.*.Event.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA"
+                        "https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA"
                     ],
                     "contains": [
                         "url"
@@ -8537,7 +8537,7 @@
                     "data_path": "action_result.data.*.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
+                        "https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
                     ],
                     "contains": [
                         "url"
@@ -9278,7 +9278,7 @@
                     "data_path": "action_result.data.*.Attribute.Event.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/event/zP1UL5zqWf6PxQv8f5OkdA"
+                        "https://api.flashpoint.io/technical-intelligence/v1/event/zP1UL5zqWf6PxQv8f5OkdA"
                     ]
                 },
                 {
@@ -9313,7 +9313,7 @@
                     "data_path": "action_result.data.*.Attribute.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
+                        "https://api.flashpoint.io/technical-intelligence/v1/attribute/tQ3UYKNAUV-iSWQp7s3ppg"
                     ]
                 },
                 {
@@ -9387,7 +9387,7 @@
                     "data_path": "action_result.data.*.Event.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/event/h-Uvmip4VPSshdEj7PgmcQ"
+                        "https://api.flashpoint.io/technical-intelligence/v1/event/A-1RokO9Wqq11S78N2TojA"
                     ],
                     "contains": [
                         "url"
@@ -9425,7 +9425,7 @@
                     "data_path": "action_result.data.*.href",
                     "data_type": "string",
                     "example_values": [
-                        "https://fp.tools/api/v4/indicators/attribute/-2kF-m_qWw6mpDcF4MuITg"
+                        "https://api.flashpoint.io/technical-intelligence/v1/attribute/caG9zjTIW8u_md8rfGWDjg"
                     ],
                     "contains": [
                         "url"
@@ -10070,67 +10070,9 @@
         }
     ],
     "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.12.7-py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.3.2.post1-py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.15-py2.py3-none-any.whl"
-            }
-        ]
+        "wheel": []
     },
     "pip39_dependencies": {
-        "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.12.7-py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.4-py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.15-py2.py3-none-any.whl"
-            }
-        ]
+        "wheel": []
     }
 }
