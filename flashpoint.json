@@ -9,7 +9,7 @@
     "product_name": "Flashpoint",
     "product_version_regex": ".*",
     "publisher": "Flashpoint",
-    "license": "Copyright (c) Flashpoint, 2020-2024",
+    "license": "Copyright (c) Flashpoint, 2020-2025",
     "app_version": "3.0.0",
     "utctime_updated": "2022-01-07T20:38:11.000000Z",
     "package_name": "phantom_flashpoint",

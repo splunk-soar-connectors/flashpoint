@@ -1,7 +1,7 @@
 # --
 # File: flashpoint_connector.py
 #
-# Copyright (c) Flashpoint, 2020-2024
+# Copyright (c) Flashpoint, 2020-2025
 #
 # This unpublished material is proprietary to Flashpoint.
 # All rights reserved. The methods and
@@ -42,7 +42,7 @@ class FlashpointConnector(BaseConnector):
     def __init__(self):
         """Initialize class variables."""
         # Call the BaseConnectors init first
-        super(FlashpointConnector, self).__init__()
+        super().__init__()
 
         # Define the global state variable
         self._state = None
@@ -69,8 +69,10 @@ class FlashpointConnector(BaseConnector):
         if response.status_code == 200 or response.status_code == 204:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(action_result.set_status(phantom.APP_ERROR,
-            "Status code: {}. Empty response and no information in the header".format(response.status_code)), None)
+        return RetVal(
+            action_result.set_status(phantom.APP_ERROR, f"Status code: {response.status_code}. Empty response and no information in the header"),
+            None,
+        )
 
     def _process_html_response(self, response, action_result):
         """Process html response.
@@ -91,15 +93,15 @@ class FlashpointConnector(BaseConnector):
             for element in soup(["script", "style", "footer", "nav"]):
                 element.extract()
             error_text = soup.text
-            split_lines = error_text.split('\n')
+            split_lines = error_text.split("\n")
             split_lines = [x.strip() for x in split_lines if x.strip()]
-            error_text = '\n'.join(split_lines)
+            error_text = "\n".join(split_lines)
         except Exception:
             error_text = "Cannot parse error details"
 
-        message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
+        message = f"Status Code: {status_code}. Data from server:\n{error_text}\n"
 
-        message = message.replace('{', '{{').replace('}', '}}')
+        message = message.replace("{", "{{").replace("}", "}}")
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -115,9 +117,12 @@ class FlashpointConnector(BaseConnector):
             resp_json = r.json()
         except Exception as e:
             error_code, error_message = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR,
-            "Unable to parse JSON response. Error Code: {0}. Error Message: {1}".format(
-                error_code, error_message)), None)
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR, f"Unable to parse JSON response. Error Code: {error_code}. Error Message: {error_message}"
+                ),
+                None,
+            )
 
         # Please specify the status codes here
         if 200 <= r.status_code < 399:
@@ -125,24 +130,24 @@ class FlashpointConnector(BaseConnector):
 
         message = None
         # Error handling for different type of error responses from server
-        if resp_json.get('error') and isinstance(resp_json.get('error'), dict):
-            resp_message = resp_json.get('error', {}).get('message', "Error message not found")
+        if resp_json.get("error") and isinstance(resp_json.get("error"), dict):
+            resp_message = resp_json.get("error", {}).get("message", "Error message not found")
             message = "Error from server. Status code: {}. Error code: {}. Error message: {}".format(
-                r.status_code, resp_json.get('error', {}).get('code', "Error code not found"), resp_message
+                r.status_code, resp_json.get("error", {}).get("code", "Error code not found"), resp_message
             )
 
-        if resp_json.get('detail'):
-            detail = resp_json.get('detail', "Error details not found")
-            message = "Error from server. Status code: {}. Data from server: {}".format(r.status_code, detail)
+        if resp_json.get("detail"):
+            detail = resp_json.get("detail", "Error details not found")
+            message = f"Error from server. Status code: {r.status_code}. Data from server: {detail}"
 
-        if resp_json.get('message'):
-            resp_message = resp_json.get('message', "Error message not found")
-            message = "Error from server. Status code: {}. Data from server: {}".format(r.status_code, resp_message)
+        if resp_json.get("message"):
+            resp_message = resp_json.get("message", "Error message not found")
+            message = f"Error from server. Status code: {r.status_code}. Data from server: {resp_message}"
 
         # You should process the error returned in the json if none of the above handling happens for error scenario
         if not message:
-            resp_text = r.text.replace('{', '{{').replace('}', '}}') if r.text else "Response error text not found"
-            message = "Error from server. Status Code: {0} Data from server: {1}".format(r.status_code, resp_text)
+            resp_text = r.text.replace("{", "{{").replace("}", "}}") if r.text else "Response error text not found"
+            message = f"Error from server. Status Code: {r.status_code} Data from server: {resp_text}"
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -154,10 +159,10 @@ class FlashpointConnector(BaseConnector):
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message)
         """
         # Store the r_text in debug data, it will get dumped in the logs if the action fails
-        if hasattr(action_result, 'add_debug_data'):
-            action_result.add_debug_data({'r_status_code': r.status_code})
-            action_result.add_debug_data({'r_text': r.text})
-            action_result.add_debug_data({'r_headers': r.headers})
+        if hasattr(action_result, "add_debug_data"):
+            action_result.add_debug_data({"r_status_code": r.status_code})
+            action_result.add_debug_data({"r_text": r.text})
+            action_result.add_debug_data({"r_headers": r.headers})
 
         # Process each 'Content-Type' of response separately
 
@@ -166,20 +171,20 @@ class FlashpointConnector(BaseConnector):
             return self._process_empty_response(r, action_result)
 
         # Process a json response
-        if 'json' in r.headers.get('Content-Type', ''):
+        if "json" in r.headers.get("Content-Type", ""):
             return self._process_json_response(r, action_result)
 
         # Process an HTML response, Do this no matter what the api talks.
         # There is a high chance of a PROXY in between phantom and the rest of
         # world, in case of errors, PROXY's return HTML, this function parses
         # the error and adds it to the action_result.
-        if 'html' in r.headers.get('Content-Type', ''):
+        if "html" in r.headers.get("Content-Type", ""):
             return self._process_html_response(r, action_result)
 
         # everything else is actually an error at this point
-        message = "Can't process response from server. Status Code: {0} Data from server: {1}".format(
-            r.status_code,
-            r.text.replace('{', '{{').replace('}', '}}') if r.text else "Response error text not found")
+        message = "Can't process response from server. Status Code: {} Data from server: {}".format(
+            r.status_code, r.text.replace("{", "{{").replace("}", "}}") if r.text else "Response error text not found"
+        )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -224,40 +229,47 @@ class FlashpointConnector(BaseConnector):
         try:
             request_func = getattr(requests, method)
         except AttributeError:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Invalid method: {method}"), resp_json)
 
         # Create headers information
         headers = dict()
 
-        headers.update({'Authorization': 'Bearer {0}'.format(self._api_token),
-                        'Content-Type': 'application/json',
-                        'X-FP-IntegrationPlatform': FLASHPOINT_X_FP_INTEGRATION_PLATFORM,
-                        'X-FP-IntegrationPlatformVersion': self._x_fp_integration_platform_version,
-                        'X-FP-IntegrationVersion': self._x_fp_integration_version})
+        headers.update(
+            {
+                "Authorization": f"Bearer {self._api_token}",
+                "Content-Type": "application/json",
+                "X-FP-IntegrationPlatform": FLASHPOINT_X_FP_INTEGRATION_PLATFORM,
+                "X-FP-IntegrationPlatformVersion": self._x_fp_integration_platform_version,
+                "X-FP-IntegrationVersion": self._x_fp_integration_version,
+            }
+        )
 
         # Create a URL to connect to Flashpoint
-        url = "{}{}".format(self._base_url, endpoint)
+        url = f"{self._base_url}{endpoint}"
 
         self.debug_print("Making a REST call with provided request parameters")
 
         try:
             r = request_func(url, params=params, headers=headers, data=data)
         except requests.exceptions.InvalidSchema:
-            error_message = 'Error connecting to server. No connection adapters were found for {}'.format(url)
+            error_message = f"Error connecting to server. No connection adapters were found for {url}"
             return RetVal(action_result.set_status(phantom.APP_ERROR, error_message), resp_json)
         except requests.exceptions.InvalidURL:
-            error_message = 'Error connecting to server. Invalid URL {}'.format(url)
+            error_message = f"Error connecting to server. Invalid URL {url}"
             return RetVal(action_result.set_status(phantom.APP_ERROR, error_message), resp_json)
         except Exception as e:
             error_code, error_message = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR,
-            "Error connecting to server. Error Code: {0}. Error Message: {1}".format(
-                error_code, error_message)), resp_json)
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR, f"Error connecting to server. Error Code: {error_code}. Error Message: {error_message}"
+                ),
+                resp_json,
+            )
 
         if self._no_of_retries and r.status_code == 500:
             # Retrying REST call in case of Internal Server Error
-            self.save_progress("Received Internal Server Error. Retrying API call after {} seconds".format(self._wait_timeout_period))
-            self.debug_print("Received Internal Server Error. Retrying API call after {} seconds".format(self._wait_timeout_period))
+            self.save_progress(f"Received Internal Server Error. Retrying API call after {self._wait_timeout_period} seconds")
+            self.debug_print(f"Received Internal Server Error. Retrying API call after {self._wait_timeout_period} seconds")
             return self._retry_make_rest_call(action_result, url, headers, request_func, params=params, data=data)
 
         return self._process_response(r, action_result)
@@ -286,14 +298,17 @@ class FlashpointConnector(BaseConnector):
             r = request_func(url, params=params, headers=headers, data=data)
         except Exception as e:
             error_code, error_message = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR,
-            "Error connecting to server. Error Code: {0}. Error Message: {1}".format(
-                error_code, error_message)), None)
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR, f"Error connecting to server. Error Code: {error_code}. Error Message: {error_message}"
+                ),
+                None,
+            )
 
         if r.status_code == 500 and self._attempted_retries < self._no_of_retries:
             # Retrying REST call for given number of retries in case of continuous Internal Server Error
-            self.save_progress("Received Internal Server Error. Retrying API call after {} seconds".format(self._wait_timeout_period))
-            self.debug_print("Received Internal Server Error. Retrying API call after {} seconds".format(self._wait_timeout_period))
+            self.save_progress(f"Received Internal Server Error. Retrying API call after {self._wait_timeout_period} seconds")
+            self.debug_print(f"Received Internal Server Error. Retrying API call after {self._wait_timeout_period} seconds")
             return self._retry_make_rest_call(action_result, url, headers, request_func, params=params, data=data)
 
         return self._process_response(r, action_result)
@@ -304,13 +319,13 @@ class FlashpointConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        attributes_types = param.get('attributes_types')
+        attributes_types = param.get("attributes_types")
         if attributes_types:
             # check for valid comma-separated list of attribute types
             types = [x.strip() for x in attributes_types.split(",")]
@@ -320,33 +335,33 @@ class FlashpointConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, FLASHPOINT_INVALID_COMMA_SEPARATED_LIST_ERROR)
             attributes_types = ",".join(types)
 
-        query = param.get('query')
-        limit = param.get('limit', FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
+        query = param.get("query")
+        limit = param.get("limit", FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
 
         # Create request parameters
         params = dict()
 
         if attributes_types:
-            params.update({'types': attributes_types.lower()})
+            params.update({"types": attributes_types.lower()})
         if query:
-            params.update({'query': query})
+            params.update({"query": query})
 
         # Call session scrolling paginator
         ret_val, iocs = self._enable_session_scrolling_paginator(action_result, limit=limit, params=params, flag=True)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # Add fetched data to action result object
         for ioc in iocs:
-            if 'Attribute' in list(ioc.keys()):
-                action_result.add_data(ioc.get('Attribute'))
+            if "Attribute" in list(ioc.keys()):
+                action_result.add_data(ioc.get("Attribute"))
             else:
                 action_result.add_data(ioc)
 
         # Create summary
         summary = action_result.update_summary({})
-        summary['total_iocs'] = action_result.get_data_size()
+        summary["total_iocs"] = action_result.get_data_size()
 
         # Return success
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -357,16 +372,16 @@ class FlashpointConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        attribute_type = param['attribute_type']
-        attribute_value = param['attribute_value']
+        attribute_type = param["attribute_type"]
+        attribute_value = param["attribute_value"]
 
-        limit = param.get('limit', FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
+        limit = param.get("limit", FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
 
         attribute_type = attribute_type.strip().lower()
         # Create request parameters
@@ -374,26 +389,26 @@ class FlashpointConnector(BaseConnector):
         if attribute_type.lower() == "url":
             # if url value is passed without inverted comma, then, the server responds with Internal Server Error.
             # so for ad-hoc fixation we are passing url value within inverted comma for avoiding unnecessary Internal Server Error
-            params.update({'search_fields': "{0}==\"{1}\"".format(attribute_type, attribute_value)})
+            params.update({"search_fields": f'{attribute_type}=="{attribute_value}"'})
         else:
-            params.update({'search_fields': "{0}=={1}".format(attribute_type, attribute_value)})
+            params.update({"search_fields": f"{attribute_type}=={attribute_value}"})
 
         # Make rest call
         ret_val, iocs = self._enable_session_scrolling_paginator(action_result, limit=limit, params=params, flag=True)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # Add fetched data to action result object
         for ioc in iocs:
-            if 'Attribute' in list(ioc.keys()):
-                action_result.add_data(ioc.get('Attribute'))
+            if "Attribute" in list(ioc.keys()):
+                action_result.add_data(ioc.get("Attribute"))
             else:
                 action_result.add_data(ioc)
 
         # Create summary
         summary = action_result.update_summary({})
-        summary['total_iocs'] = action_result.get_data_size()
+        summary["total_iocs"] = action_result.get_data_size()
 
         # Return success
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -404,23 +419,23 @@ class FlashpointConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        query = param['query']
-        limit = param.get('limit', FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
+        query = param["query"]
+        limit = param.get("limit", FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
 
         # Create request parameters
         params = dict()
-        params.update({'query': query})
+        params.update({"query": query})
 
         # Make rest call
         ret_val, results = self._enable_session_scrolling_paginator(action_result, limit=limit, params=params)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # Add fetched data to action result object
@@ -429,7 +444,7 @@ class FlashpointConnector(BaseConnector):
 
         # Create summary
         summary = action_result.update_summary({})
-        summary['total_results'] = action_result.get_data_size()
+        summary["total_results"] = action_result.get_data_size()
 
         # Return success
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -440,25 +455,25 @@ class FlashpointConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        query_filter = param.get('filter')
-        limit = param.get('limit', FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
+        query_filter = param.get("filter")
+        limit = param.get("limit", FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
 
         # Create request parameters
         params = dict()
-        query = "+basetypes:credential-sighting{}".format(query_filter if query_filter else '')
+        query = "+basetypes:credential-sighting{}".format(query_filter if query_filter else "")
 
-        params.update({'query': query})
+        params.update({"query": query})
 
         # Make rest call
         ret_val, results = self._enable_session_scrolling_paginator(action_result, limit=limit, params=params)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # Add fetched data to action result object
@@ -467,7 +482,7 @@ class FlashpointConnector(BaseConnector):
 
         # Create summary
         summary = action_result.update_summary({})
-        summary['total_results'] = action_result.get_data_size()
+        summary["total_results"] = action_result.get_data_size()
 
         # Return success
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -494,22 +509,22 @@ class FlashpointConnector(BaseConnector):
             page_limit = limit
 
         if params:
-            params.update({'limit': page_limit})
+            params.update({"limit": page_limit})
         else:
             params = dict()
-            params.update({'limit': page_limit})
+            params.update({"limit": page_limit})
 
         if flag:
             # This block is used for indicators simple APIs
 
             # Enable the session scroll for the first time
-            params.update({'scroll': True})
+            params.update({"scroll": True})
             endpoint = FLASHPOINT_INDICATORS_ENDPOINT
         else:
             # This block will use for all search APIs
 
             # Enable the session scroll for the first time
-            params.update({'scroll': "{}m".format(self._session_timeout)})
+            params.update({"scroll": f"{self._session_timeout}m"})
             endpoint = FLASHPOINT_ALL_SEARCH_ENDPOINT
 
         return phantom.APP_SUCCESS, params, endpoint, limit
@@ -525,7 +540,7 @@ class FlashpointConnector(BaseConnector):
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR), fetched results of IoCs or all search results
         """
         total_items = list()
-        endpoint = str()
+        endpoint = ""
         scroll_id = None
 
         # initial processor for paginator which creates endpoint parameters
@@ -591,7 +606,7 @@ class FlashpointConnector(BaseConnector):
             endpoint = FLASHPOINT_SIMPLIFIED_INDICATORS_SCROLL_ENDPOINT
         else:
             # This block is used for all search APIs
-            endpoint = "{0}?scroll={1}m".format(FLASHPOINT_ALL_SEARCH_SCROLL_ENDPOINT, self._session_timeout)
+            endpoint = f"{FLASHPOINT_ALL_SEARCH_SCROLL_ENDPOINT}?scroll={self._session_timeout}m"
 
         return endpoint
 
@@ -612,9 +627,7 @@ class FlashpointConnector(BaseConnector):
             return phantom.APP_SUCCESS, total_items
 
         # Create request data for session scrolling
-        data = {
-            "scroll_id": scroll_id
-        }
+        data = {"scroll_id": scroll_id}
 
         self.debug_print("Making a further rest call for getting remaning data using fetched scroll ID")
         while True:
@@ -664,12 +677,12 @@ class FlashpointConnector(BaseConnector):
 
         if flag:
             # IoCs results
-            total_items = response.get('results')
-            scroll_id = response.get('scroll_id')
+            total_items = response.get("results")
+            scroll_id = response.get("scroll_id")
         else:
             # All search results
-            total_items = response.get('hits', {}).get('hits')
-            scroll_id = response.get('_scroll_id')
+            total_items = response.get("hits", {}).get("hits")
+            scroll_id = response.get("_scroll_id")
 
         # Return IoCs or all search results with scroll ID
         return total_items, scroll_id
@@ -687,10 +700,8 @@ class FlashpointConnector(BaseConnector):
             self.debug_print("Scroll session is not available")
             return phantom.APP_SUCCESS
 
-        endpoint = str()
-        data = {
-            "scroll_id": scroll_id
-        }
+        endpoint = ""
+        data = {"scroll_id": scroll_id}
 
         if flag:
             # This block is used for indicators simple APIs
@@ -702,7 +713,7 @@ class FlashpointConnector(BaseConnector):
         self.debug_print("Make a rest call to disable scroll session")
 
         # Make rest call
-        ret_val, _ = self._make_rest_call(endpoint, action_result, method='delete', data=json.dumps(data))
+        ret_val, _ = self._make_rest_call(endpoint, action_result, method="delete", data=json.dumps(data))
 
         if phantom.is_fail(ret_val):
             # If session already disabled
@@ -734,10 +745,10 @@ class FlashpointConnector(BaseConnector):
             page_limit = limit
 
         if params:
-            params.update({'limit': page_limit})
+            params.update({"limit": page_limit})
         else:
             params = dict()
-            params.update({'limit': page_limit})
+            params.update({"limit": page_limit})
 
         while True:
             params.update({"skip": skip})
@@ -749,7 +760,7 @@ class FlashpointConnector(BaseConnector):
                 return action_result.get_status(), None
 
             # Fetch data from response
-            reports = response.get('data')
+            reports = response.get("data")
             if reports is None:
                 return action_result.set_status(phantom.APP_ERROR, "No data found"), None
 
@@ -758,7 +769,7 @@ class FlashpointConnector(BaseConnector):
             if limit and len(total_reports) >= limit:
                 return phantom.APP_SUCCESS, total_reports[:limit]
 
-            total = response.get('total')
+            total = response.get("total")
             if len(total_reports) >= total:
                 return phantom.APP_SUCCESS, total_reports
 
@@ -773,7 +784,7 @@ class FlashpointConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        self.debug_print("In action handler for: {0}".format(self.get_action_identifier()))
+        self.debug_print(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -782,12 +793,12 @@ class FlashpointConnector(BaseConnector):
 
         # Fetch single indicator(IoC) for the test connectivity
         param = dict()
-        param.update({'limit': 1})
+        param.update({"limit": 1})
 
         # Make rest call
         ret_val, _ = self._make_rest_call(FLASHPOINT_INDICATORS_ENDPOINT, action_result, params=param)
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             self.save_progress("Test Connectivity Failed")
             return action_result.get_status()
 
@@ -811,7 +822,7 @@ class FlashpointConnector(BaseConnector):
 
         # Call paginator to fetch data
         ret_val, reports = self._paginator_using_skip(action_result, endpoint, limit)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # Process report data
@@ -830,22 +841,22 @@ class FlashpointConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        limit = param.get('limit', FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
+        limit = param.get("limit", FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
 
         # Fetch reports data
         ret_val = self._fetch_reports(action_result, FLASHPOINT_LIST_REPORTS_ENDPOINT, limit)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # Create summary
         summary = action_result.update_summary({})
-        summary['total_reports'] = action_result.get_data_size()
+        summary["total_reports"] = action_result.get_data_size()
 
         # Return success
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -856,24 +867,24 @@ class FlashpointConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        report_id = param['report_id']
+        report_id = param["report_id"]
 
-        limit = param.get('limit', FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
+        limit = param.get("limit", FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
 
         # Fetch reports
         ret_val = self._fetch_reports(action_result, FLASHPOINT_LIST_RELATED_REPORTS_ENDPOINT.format(report_id=report_id), limit)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # Create summary
         summary = action_result.update_summary({})
-        summary['total_related_reports'] = action_result.get_data_size()
+        summary["total_related_reports"] = action_result.get_data_size()
 
         # Return success
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -884,17 +895,17 @@ class FlashpointConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        report_id = param['report_id']
+        report_id = param["report_id"]
 
         # Make rest call
         ret_val, report = self._make_rest_call(FLASHPOINT_GET_REPORT_ENDPOINT.format(report_id=report_id), action_result)
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # Process report data
@@ -914,38 +925,38 @@ class FlashpointConnector(BaseConnector):
         """
         for i, item in enumerate(data):
             # Process report body
-            body = item.get('body')
+            body = item.get("body")
             if body:
                 try:
                     soup = BeautifulSoup(body, "html.parser")
                     body_text = soup.text
-                    split_lines = body_text.split('\n')
+                    split_lines = body_text.split("\n")
                     split_lines = [x.strip() for x in split_lines if x.strip()]
-                    body_text = '\n'.join(split_lines)
+                    body_text = "\n".join(split_lines)
                 except Exception:
                     body_text = body
 
-                data[i].update({'processed_body': body_text})
+                data[i].update({"processed_body": body_text})
             else:
-                data[i].update({'body': body})
-                data[i].update({'processed_body': body})
+                data[i].update({"body": body})
+                data[i].update({"processed_body": body})
 
             # Process report summary
-            summary = item.get('summary')
+            summary = item.get("summary")
             if summary:
                 try:
                     soup = BeautifulSoup(summary, "html.parser")
                     summary_text = soup.text
-                    split_lines = summary_text.split('\n')
+                    split_lines = summary_text.split("\n")
                     split_lines = [x.strip() for x in split_lines if x.strip()]
-                    summary_text = '\n'.join(split_lines)
+                    summary_text = "\n".join(split_lines)
                 except Exception:
                     summary_text = summary
 
-                data[i].update({'processed_summary': summary_text})
+                data[i].update({"processed_summary": summary_text})
             else:
-                data[i].update({'summary': summary})
-                data[i].update({'processed_summary': summary})
+                data[i].update({"summary": summary})
+                data[i].update({"processed_summary": summary})
 
         # Return processed data
         return data
@@ -972,8 +983,11 @@ class FlashpointConnector(BaseConnector):
                     action_result.set_status(phantom.APP_ERROR, FLASHPOINT_LIMIT_VALIDATION_MESSAGE.format(parameter=key))
                     return None
         except Exception:
-            error_text = FLASHPOINT_LIMIT_VALIDATION_ALLOW_ZERO_MESSAGE.format(
-                parameter=key) if allow_zero else FLASHPOINT_LIMIT_VALIDATION_MESSAGE.format(parameter=key)
+            error_text = (
+                FLASHPOINT_LIMIT_VALIDATION_ALLOW_ZERO_MESSAGE.format(parameter=key)
+                if allow_zero
+                else FLASHPOINT_LIMIT_VALIDATION_MESSAGE.format(parameter=key)
+            )
             action_result.set_status(phantom.APP_ERROR, error_text)
             return None
         return parameter
@@ -992,14 +1006,14 @@ class FlashpointConnector(BaseConnector):
 
         # Dictionary mapping each action with its corresponding actions
         action_mapping = {
-            'test_connectivity': self._handle_test_connectivity,
-            'list_reports': self._handle_list_reports,
-            'get_report': self._handle_get_report,
-            'list_related_reports': self._handle_list_related_reports,
-            'get_compromised_credentials': self._handle_get_compromised_credentials,
-            'run_query': self._handle_run_query,
-            'list_indicators': self._handle_list_indicators,
-            'search_indicators': self._handle_search_indicators
+            "test_connectivity": self._handle_test_connectivity,
+            "list_reports": self._handle_list_reports,
+            "get_report": self._handle_get_report,
+            "list_related_reports": self._handle_list_related_reports,
+            "get_compromised_credentials": self._handle_get_compromised_credentials,
+            "run_query": self._handle_run_query,
+            "list_indicators": self._handle_list_indicators,
+            "search_indicators": self._handle_search_indicators,
         }
 
         if action in list(action_mapping.keys()):
@@ -1017,28 +1031,29 @@ class FlashpointConnector(BaseConnector):
         # Get the asset config
         config = self.get_config()
 
-        self._base_url = config['base_url']
-        self._api_token = config['api_token']
+        self._base_url = config["base_url"]
+        self._api_token = config["api_token"]
         self._x_fp_integration_platform_version = self.get_product_version()
-        self._x_fp_integration_version = self.get_app_json().get('app_version')
+        self._x_fp_integration_version = self.get_app_json().get("app_version")
 
         # Validate the 'wait_timeout_period' config parameter
         self._wait_timeout_period = self._validate_integers(
-            self, config.get('wait_timeout_period', FLASHPOINT_DEFAULT_WAIT_TIMEOUT_PERIOD), FLASHPOINT_CONFIG_WAIT_TIMEOUT_PERIOD_KEY)
+            self, config.get("wait_timeout_period", FLASHPOINT_DEFAULT_WAIT_TIMEOUT_PERIOD), FLASHPOINT_CONFIG_WAIT_TIMEOUT_PERIOD_KEY
+        )
         if self._wait_timeout_period is None:
             return self.get_status()
 
         # Validate the 'no_of_retries' config parameter
-        self._no_of_retries = self._validate_integers(self, config.get(
-            'no_of_retries', FLASHPOINT_NUMBER_OF_RETRIES), FLASHPOINT_CONFIG_NO_OF_RETRIES_KEY,
-            True)
+        self._no_of_retries = self._validate_integers(
+            self, config.get("no_of_retries", FLASHPOINT_NUMBER_OF_RETRIES), FLASHPOINT_CONFIG_NO_OF_RETRIES_KEY, True
+        )
         if self._no_of_retries is None:
             return self.get_status()
 
         # Validate the 'session_timeout' config parameter
-        self._session_timeout = self._validate_integers(self, config.get(
-            'session_timeout', FLASHPOINT_SESSION_TIMEOUT),
-            FLASHPOINT_CONFIG_SESSION_TIMEOUT_KEY)
+        self._session_timeout = self._validate_integers(
+            self, config.get("session_timeout", FLASHPOINT_SESSION_TIMEOUT), FLASHPOINT_CONFIG_SESSION_TIMEOUT_KEY
+        )
         if self._session_timeout is None:
             return self.get_status()
 
@@ -1058,8 +1073,7 @@ class FlashpointConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     import argparse
 
     import pudb
@@ -1068,10 +1082,10 @@ if __name__ == '__main__':
 
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument('input_test_json', help='Input Test JSON file')
-    argparser.add_argument('-u', '--username', help='username', required=False)
-    argparser.add_argument('-p', '--password', help='password', required=False)
-    argparser.add_argument('-v', '--verify', action='store_true', help='verify', required=False, default=False)
+    argparser.add_argument("input_test_json", help="Input Test JSON file")
+    argparser.add_argument("-u", "--username", help="username", required=False)
+    argparser.add_argument("-p", "--password", help="password", required=False)
+    argparser.add_argument("-v", "--verify", action="store_true", help="verify", required=False, default=False)
 
     args = argparser.parse_args()
     session_id = None
@@ -1080,32 +1094,32 @@ if __name__ == '__main__':
     username = args.username
     password = args.password
 
-    if (username is not None and password is None):
-
+    if username is not None and password is None:
         # User specified a username but not a password, so ask
         import getpass
+
         password = getpass.getpass("Password: ")
 
-    if (username and password):
+    if username and password:
         try:
-            login_url = FlashpointConnector._get_phantom_base_url() + '/login'
+            login_url = FlashpointConnector._get_phantom_base_url() + "/login"
 
             print("Accessing the Login page")
             r = requests.get(login_url, verify=verify, timeout=FLASHPOINT_DEFAULT_REQUEST_TIMEOUT)
-            csrftoken = r.cookies['csrftoken']
+            csrftoken = r.cookies["csrftoken"]
 
             data = dict()
-            data['username'] = username
-            data['password'] = password
-            data['csrfmiddlewaretoken'] = csrftoken
+            data["username"] = username
+            data["password"] = password
+            data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = login_url
+            headers["Cookie"] = "csrftoken=" + csrftoken
+            headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
             r2 = requests.post(login_url, verify=verify, data=data, headers=headers, timeout=FLASHPOINT_DEFAULT_REQUEST_TIMEOUT)
-            session_id = r2.cookies['sessionid']
+            session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
             sys.exit(1)
@@ -1118,9 +1132,9 @@ if __name__ == '__main__':
         connector = FlashpointConnector()
         connector.print_progress_message = True
 
-        if (session_id is not None):
-            in_json['user_session_token'] = session_id
-            connector._set_csrf_info(csrftoken, headers['Referer'])
+        if session_id is not None:
+            in_json["user_session_token"] = session_id
+            connector._set_csrf_info(csrftoken, headers["Referer"])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
