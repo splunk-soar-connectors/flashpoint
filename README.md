@@ -1,9 +1,9 @@
 # Flashpoint
 
-Publisher: Flashpoint \
-Connector Version: 3.0.0 \
-Product Vendor: Flashpoint \
-Product Name: Flashpoint \
+Publisher: Flashpoint <br>
+Connector Version: 3.0.0 <br>
+Product Vendor: Flashpoint <br>
+Product Name: Flashpoint <br>
 Minimum Product Version: 6.2.1
 
 This app implements the investigative actions for the Flashpoint on the Phantom Platform
@@ -314,20 +314,20 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration \
-[list reports](#action-list-reports) - Fetch a list of all the intelligence reports from the Flashpoint Platform \
-[get report](#action-get-report) - Fetch a specific intelligence report from the Flashpoint Platform for the provided report ID \
-[list related reports](#action-list-related-reports) - Fetch a list of all the related intelligence reports from the Flashpoint Platform for the provided report ID \
-[get compromised credentials](#action-get-compromised-credentials) - Fetch a list of all the Credential Sightings from the Flashpoint Platform \
-[run query](#action-run-query) - Fetch the data by performing a universal search from the Flashpoint Platform \
-[list indicators](#action-list-indicators) - Fetch a list of IoCs that occur in the context of an event from the Flashpoint Platform \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
+[list reports](#action-list-reports) - Fetch a list of all the intelligence reports from the Flashpoint Platform <br>
+[get report](#action-get-report) - Fetch a specific intelligence report from the Flashpoint Platform for the provided report ID <br>
+[list related reports](#action-list-related-reports) - Fetch a list of all the related intelligence reports from the Flashpoint Platform for the provided report ID <br>
+[get compromised credentials](#action-get-compromised-credentials) - Fetch a list of all the Credential Sightings from the Flashpoint Platform <br>
+[run query](#action-run-query) - Fetch the data by performing a universal search from the Flashpoint Platform <br>
+[list indicators](#action-list-indicators) - Fetch a list of IoCs that occur in the context of an event from the Flashpoint Platform <br>
 [search indicators](#action-search-indicators) - Fetch an IoC value of a specific attribute type from the list of available IoCs on the Flashpoint Platform
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity using supplied configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -342,7 +342,7 @@ No Output
 
 Fetch a list of all the intelligence reports from the Flashpoint Platform
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -391,7 +391,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch a specific intelligence report from the Flashpoint Platform for the provided report ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -440,7 +440,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch a list of all the related intelligence reports from the Flashpoint Platform for the provided report ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -491,7 +491,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch a list of all the Credential Sightings from the Flashpoint Platform
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -551,7 +551,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch the data by performing a universal search from the Flashpoint Platform
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -1483,7 +1483,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch a list of IoCs that occur in the context of an event from the Flashpoint Platform
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -1682,7 +1682,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetch an IoC value of a specific attribute type from the list of available IoCs on the Flashpoint Platform
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -1839,7 +1839,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
