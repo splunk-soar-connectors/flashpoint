@@ -1,7 +1,7 @@
 # Flashpoint
 
 Publisher: Flashpoint <br>
-Connector Version: 3.0.0 <br>
+Connector Version: 3.0.1 <br>
 Product Vendor: Flashpoint <br>
 Product Name: Flashpoint <br>
 Minimum Product Version: 6.2.1
