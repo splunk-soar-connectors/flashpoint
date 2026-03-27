@@ -9,14 +9,14 @@
     "product_name": "Flashpoint",
     "product_version_regex": ".*",
     "publisher": "Flashpoint",
-    "license": "Copyright (c) Flashpoint, 2020-2025",
+    "license": "Copyright (c) Flashpoint, 2020-2026",
     "app_version": "3.0.0",
     "utctime_updated": "2022-01-07T20:38:11.000000Z",
     "package_name": "phantom_flashpoint",
     "main_module": "flashpoint_connector.py",
     "min_phantom_version": "6.2.1",
     "app_wizard_version": "1.0.0",
-    "python_version": "3",
+    "python_version": "3.9, 3.13",
     "fips_compliant": true,
     "latest_tested_version": [
         "Cloud v4.5.23"
@@ -10068,5 +10068,11 @@
             },
             "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip39_dependencies": {
+        "wheel": []
+    },
+    "pip313_dependencies": {
+        "wheel": []
+    }
 }
