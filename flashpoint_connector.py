@@ -17,6 +17,7 @@
 import json
 import sys
 import time
+from urllib.parse import quote
 
 # Phantom App imports
 import phantom.app as phantom
@@ -873,7 +874,7 @@ class FlashpointConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        report_id = param["report_id"]
+        report_id = quote(param["report_id"], safe="")
 
         limit = param.get("limit", FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
 
@@ -901,7 +902,7 @@ class FlashpointConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        report_id = param["report_id"]
+        report_id = quote(param["report_id"], safe="")
 
         # Make rest call
         ret_val, report = self._make_rest_call(FLASHPOINT_GET_REPORT_ENDPOINT.format(report_id=report_id), action_result)

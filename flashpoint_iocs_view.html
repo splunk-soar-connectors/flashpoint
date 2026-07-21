@@ -113,7 +113,7 @@
               <td>
                 <a class="no-word-wrap"
                    href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['fp attribute type'], 'value':'{{ result.param.attibute_type }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['fp attribute type'], 'value':'{{ result.param.attibute_type|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ result.param.attribute_type }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -127,7 +127,7 @@
               <td>
                 <a class="no-word-wrap"
                    href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['fp attribute value'], 'value':'{{ result.param.attibute_value }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['fp attribute value'], 'value':'{{ result.param.attibute_value|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ result.param.attribute_value }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -141,7 +141,7 @@
               <td>
                 <a class="no-word-wrap"
                    href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['fp attribute type'], 'value':'{{ result.param.attributes_types }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['fp attribute type'], 'value':'{{ result.param.attributes_types|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ result.param.attributes_types }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -183,7 +183,7 @@
                   <td>
                     <a class="no-word-wrap"
                        href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['fp attribute type'], 'value':'{{ ioc.type }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['fp attribute type'], 'value':'{{ ioc.type|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ ioc.type }}
                       &nbsp;
                       <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -200,7 +200,7 @@
                             {% else %}
                               <a class="no-word-wrap"
                                  href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': ['fp attribute value'], 'value':'{{ value }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': ['fp attribute value'], 'value':'{{ value|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ value }}
                                 &nbsp;
                                 <span class="fa fa-caret-down" style="font-size: smaller;"></span>
