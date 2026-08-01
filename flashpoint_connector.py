@@ -15,6 +15,7 @@
 # --
 
 import json
+import re
 import sys
 import time
 from urllib.parse import quote
@@ -59,6 +60,14 @@ class FlashpointConnector(BaseConnector):
 
         # Variable to hold the number of attempted retries of REST calls
         self._attempted_retries = 0
+
+    @staticmethod
+    def _validate_report_id(report_id, action_result):
+        """Validate and encode a report identifier as one endpoint path component."""
+        if not isinstance(report_id, str) or report_id in {".", ".."} or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", report_id):
+            return action_result.set_status(phantom.APP_ERROR, "Invalid report ID"), None
+
+        return phantom.APP_SUCCESS, quote(report_id, safe="")
 
     def _process_empty_response(self, response, action_result):
         """Process empty response.
@@ -874,7 +883,9 @@ class FlashpointConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        report_id = quote(param["report_id"], safe="")
+        ret_val, report_id = self._validate_report_id(param["report_id"], action_result)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         limit = param.get("limit", FLASHPOINT_PER_PAGE_DEFAULT_LIMIT)
 
@@ -902,7 +913,9 @@ class FlashpointConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Fetch action parameters
-        report_id = quote(param["report_id"], safe="")
+        ret_val, report_id = self._validate_report_id(param["report_id"], action_result)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         # Make rest call
         ret_val, report = self._make_rest_call(FLASHPOINT_GET_REPORT_ENDPOINT.format(report_id=report_id), action_result)
