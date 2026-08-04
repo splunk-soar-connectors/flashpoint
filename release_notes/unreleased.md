@@ -1,3 +1,1 @@
 **Unreleased**
-
-* Validate report identifiers before constructing report endpoints
