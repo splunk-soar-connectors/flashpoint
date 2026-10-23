@@ -26,6 +26,10 @@ FLASHPOINT_SIGHTING_V2_ENDPOINT = "/technical-intelligence/v2/sightings/{sightin
 FLASHPOINT_ALERTS_ENDPOINT = "/alert-management/v1/notifications"
 FLASHPOINT_ALL_SEARCH_ENDPOINT = "/sources/v1/noncommunities/search"
 FLASHPOINT_ALL_SEARCH_SCROLL_ENDPOINT = "/sources/v1/noncommunities/scroll"
+
+# A breached password in a response body must not reach the action's debug data, which is written to the log on a failed run
+FLASHPOINT_PASSWORD_REDACTION_PATTERN = r'("password"\s*:\s*)"(?:[^"\\]|\\.)*(?:"|$)'
+FLASHPOINT_REDACTED_VALUE = "[REDACTED]"
 FLASHPOINT_LIST_REPORTS_ENDPOINT = "/finished-intelligence/v1/reports"
 FLASHPOINT_GET_REPORT_ENDPOINT = "/finished-intelligence/v1/reports/{report_id}"
 FLASHPOINT_LIST_RELATED_REPORTS_ENDPOINT = "/finished-intelligence/v1/reports/{report_id}/related"
@@ -201,12 +205,12 @@ FLASHPOINT_ALERT_INGEST_ENUM_CONFIG = {
     "alert_status": "status",
     "alert_origin": "origin",
 }
-# The credential ingestion watermark field. A credential-sighting document carries this datetime
-# under 'breach', so both the window clause and the sort are built on the breach sub-fields; the
-# bare top-level field matches no records on the noncommunities search endpoint
-FLASHPOINT_CREDENTIAL_WATERMARK = "created_at"
-FLASHPOINT_CREDENTIAL_DATE_FIELD = f"breach.{FLASHPOINT_CREDENTIAL_WATERMARK}.date-time"
-FLASHPOINT_CREDENTIAL_SORT_FIELD = f"breach.{FLASHPOINT_CREDENTIAL_WATERMARK}.timestamp"
+# The credential ingestion watermark: when Flashpoint indexed the sighting, as epoch seconds. The
+# breach's own dates cannot serve, because new sightings keep being added to breaches created months
+# earlier and a window on the breach date never reaches them
+FLASHPOINT_CREDENTIAL_WATERMARK_FIELD = "header_.indexed_at"
+# Saved with the checkpoint so a position recorded against a different watermark is not resumed
+FLASHPOINT_STATE_WATERMARK_FIELD = "watermark_field"
 FLASHPOINT_CREDENTIAL_INGEST_PAGE_SIZE = 1000
 FLASHPOINT_DEFAULT_FIRST_RUN_WINDOW = 3
 FLASHPOINT_DEFAULT_MAX_EVENTS_PER_POLL = 100

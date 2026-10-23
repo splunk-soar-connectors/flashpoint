@@ -197,6 +197,25 @@ class FlashpointConnector(BaseConnector):
 
         return ""
 
+    @staticmethod
+    def _redact_password(text):
+        """Mask the value of every 'password' field in a response body.
+
+        The body is kept as text rather than parsed, so a truncated or malformed body is masked too.
+
+        :param text: response body
+        :return: response body with the password values masked
+        """
+        if not text:
+            return text
+
+        return re.sub(
+            FLASHPOINT_PASSWORD_REDACTION_PATTERN,
+            lambda match: f'{match.group(1)}"{FLASHPOINT_REDACTED_VALUE}"',
+            text,
+            flags=re.IGNORECASE,
+        )
+
     def _process_response(self, r, action_result):
         """Process API response.
 
@@ -207,7 +226,7 @@ class FlashpointConnector(BaseConnector):
         # Store the r_text in debug data, it will get dumped in the logs if the action fails
         if hasattr(action_result, "add_debug_data"):
             action_result.add_debug_data({"r_status_code": r.status_code})
-            action_result.add_debug_data({"r_text": r.text})
+            action_result.add_debug_data({"r_text": self._redact_password(r.text)})
             action_result.add_debug_data({"r_headers": r.headers})
 
         # Process each 'Content-Type' of response separately
@@ -527,7 +546,7 @@ class FlashpointConnector(BaseConnector):
             return action_result.get_status(), None, None
 
         # Validate the 'size' action parameter
-        size = self._validate_integers(action_result, param.get("size", default_size), FLASHPOINT_ACTION_SIZE_KEY, True)
+        size = self._validate_integers(action_result, param.get("size", default_size), FLASHPOINT_ACTION_SIZE_KEY)
         if size is None:
             return action_result.get_status(), None, None
 
@@ -1669,6 +1688,17 @@ class FlashpointConnector(BaseConnector):
         return value.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     @staticmethod
+    def _parse_datetime(value):
+        """Parse an ISO-8601 datetime saved in the checkpoint.
+
+        :param value: ISO-8601 string, with a 'Z' or a numeric offset
+        :return: timezone-aware datetime, UTC when the string carries no offset
+        """
+        moment = datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+        return moment if moment.tzinfo else moment.replace(tzinfo=timezone.utc)
+
+    @staticmethod
     def _get_alert_cursor(alert):
         """Build the cursor that resumes an ascending alert walk after the given alert.
 
@@ -1996,14 +2026,20 @@ class FlashpointConnector(BaseConnector):
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
         mode_state, start_time, end_time, resuming = self._get_ingestion_window(FLASHPOINT_STATE_CREDENTIALS_KEY, first_run_window)
+
+        # An offset saved against another watermark points into a differently ordered walk, so a
+        # checkpoint written before the switch to the index time reopens its window from the start
+        migrated = mode_state.get(FLASHPOINT_STATE_WATERMARK_FIELD) != FLASHPOINT_CREDENTIAL_WATERMARK_FIELD
+        if migrated and resuming:
+            end_time, resuming = self._format_datetime(datetime.now(timezone.utc)), False
+
         # A manual run must not consume the saved position, otherwise it would advance the scheduled walk
-        offset = 0 if is_poll_now else int(mode_state.get(FLASHPOINT_STATE_OFFSET) or 0)
+        offset = 0 if is_poll_now or migrated else int(mode_state.get(FLASHPOINT_STATE_OFFSET) or 0)
 
         query = self._build_credential_ingest_query(config, start_time, end_time)
 
-        # Ascending order on the watermark field keeps the walk aligned with the saved position. The
-        # sortable form of that field is the breach timestamp; a sort on the bare field is ignored
-        params = {"query": query, "sort": f"{FLASHPOINT_CREDENTIAL_SORT_FIELD}:asc"}
+        # Ascending order on the watermark field keeps the walk aligned with the saved position
+        params = {"query": query, "sort": f"{FLASHPOINT_CREDENTIAL_WATERMARK_FIELD}:asc"}
 
         if config.get("meets_pw_complexity"):
             params["meets_pw_complexity"] = "true"
@@ -2028,11 +2064,17 @@ class FlashpointConnector(BaseConnector):
         if not drained and position + max_events > FLASHPOINT_SEARCH_OFFSET_CEILING:
             watermark = self._get_credential_watermark(records[-1])
             if watermark:
+                # A full ceiling of records indexed within one second leaves the watermark where the
+                # window already starts, and restarting there would re-read the same records forever
+                if self._parse_datetime(watermark) <= self._parse_datetime(start_time):
+                    watermark = self._format_datetime(self._parse_datetime(start_time) + timedelta(seconds=1))
+                    self.debug_print(f"More records were indexed at {start_time} than the search can page through; moving on to {watermark}")
                 start_time, position = watermark, 0
 
         # The checkpoint is written only after the containers of this batch are saved, so a failed
         # poll repeats its window instead of skipping it
         if not is_poll_now:
+            mode_state[FLASHPOINT_STATE_WATERMARK_FIELD] = FLASHPOINT_CREDENTIAL_WATERMARK_FIELD
             self._save_ingestion_window(FLASHPOINT_STATE_CREDENTIALS_KEY, mode_state, start_time, end_time, position, drained)
 
         summary = action_result.update_summary({})
@@ -2058,9 +2100,10 @@ class FlashpointConnector(BaseConnector):
         :param end_time: end of the window
         :return: query
         """
-        # A credential-sighting document carries its datetimes under 'breach', so the window is
-        # expressed on the breach sub-field; the bare '+created_at:' clause matches no records
-        clauses = ["+basetypes:credential-sighting", f"+{FLASHPOINT_CREDENTIAL_DATE_FIELD}:[{start_time} TO {end_time}]"]
+        # The index time is stored as epoch seconds, so the ISO bounds of the checkpoint are converted
+        start_epoch = int(self._parse_datetime(start_time).timestamp())
+        end_epoch = int(self._parse_datetime(end_time).timestamp())
+        clauses = ["+basetypes:credential-sighting", f"+{FLASHPOINT_CREDENTIAL_WATERMARK_FIELD}:[{start_epoch} TO {end_epoch}]"]
 
         # The standing filter is a raw query fragment in the same syntax as the action parameter,
         # so it is appended as its own clause and left exactly as the analyst wrote it
@@ -2084,10 +2127,11 @@ class FlashpointConnector(BaseConnector):
         :param record: credential sighting record
         :return: ISO-8601 datetime of the record, None when it carries none
         """
-        breach = ((record.get("_source") or {}).get("breach") or {}).get(FLASHPOINT_CREDENTIAL_WATERMARK) or {}
-        watermark = breach.get("date-time")
+        indexed_at = ((record.get("_source") or {}).get("header_") or {}).get("indexed_at")
+        if isinstance(indexed_at, bool) or not isinstance(indexed_at, (int, float)):
+            return None
 
-        return watermark if isinstance(watermark, str) and watermark else None
+        return FlashpointConnector._format_datetime(datetime.fromtimestamp(indexed_at, timezone.utc))
 
     def _paginator_using_search_offset(self, action_result, params, record_limit, start_offset=0):
         """Fetch credential records with offset paging bounded by the documented offset ceiling.

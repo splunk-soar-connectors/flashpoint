@@ -413,7 +413,9 @@ longer be able to retrieve this key after leaving this page.
      stay in the artifact data rather than in CEF.
    - **Compromised Credentials mode** calls `GET /sources/v1/noncommunities/search` with the
      internally built `+basetypes:credential-sighting` query, the watermark window and the
-     standing filter. The container `start_time` is the moment the credential was observed
+     standing filter. The window is on `header_.indexed_at`, the time Flashpoint indexed each
+     sighting, so a new sighting added to a breach created long before the window is still
+     ingested. The container `start_time` is the moment the credential was observed
      (`breach.first_observed_at`, falling back to `breach.created_at`), not the moment the poll
      ran. The artifact carries:
      - `email`, `domain`, `destinationDnsDomain` (`affected_domain`) and `requestURL`
@@ -450,7 +452,12 @@ longer be able to retrieve this key after leaving this page.
      checkpoint or consume the saved alert cursor.
    - **<u>Notes</u> -** The credential search endpoint rejects a request whose `from` + `size`
      exceeds 10,000. The ingestion walk therefore stops at that ceiling and resumes from the saved
-     watermark on the next poll instead of silently skipping records.
+     watermark on the next poll instead of silently skipping records. If more than 10,000 records
+     share a single indexed second, the walk cannot page past them and moves on to the next
+     second; the remainder of that second is skipped and logged.
+   - **Upgrade:** a checkpoint saved by an earlier build, which windowed on the breach date, is
+     reused as the start of an indexed-time window. A window it was still draining is reopened from
+     its start; records already ingested are not duplicated.
 1. ### List Reports
    - **<u>Action Parameter</u> ​ - Limit**
 
