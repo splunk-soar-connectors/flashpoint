@@ -90,6 +90,21 @@
         white-space:nowrap;
     }
 
+  .fp td ul {
+    margin: 0;
+    padding-left: 1.2em;
+    list-style-position: outside;
+    min-width: 14em;
+  }
+
+  .fp td ul ul {
+    padding-left: 1em;
+  }
+
+  .fp td li {
+    overflow-wrap: anywhere;
+  }
+
   </style>
   <div class="fp"
        style="overflow: auto;
@@ -105,29 +120,6 @@
       {% if not result.data %}
         <h4 class="wf-h4-style">No data found</h4>
       {% else %}
-        <h4 class="wf-h4-style">Action Parameters</h4>
-        <table class="wf-table-vertical">
-          {% if result.param.report_id %}
-            <tr>
-              <td>Report ID</td>
-              <td>
-                <a class="no-word-wrap"
-                   href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['fp report id'], 'value':'{{ result.param.report_id|escapejs }}' }], 0, {{ container.id }}, null, false);">
-                  {{ result.param.report_id }}
-                  &nbsp;
-                  <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                </a>
-              </td>
-            </tr>
-          {% endif %}
-          {% if result.param.limit %}
-            <tr>
-              <td>Limit</td>
-              <td>{{ result.param.limit }}</td>
-            </tr>
-          {% endif %}
-        </table>
         <div class="results">
           <h4 class="wf-h4-style">Reports Information</h4>
           <!--Default View-->
